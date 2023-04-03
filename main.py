@@ -4,6 +4,8 @@
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 import pygame
+
+from Enemy import Enemy
 from Player import Player
 
 from pygame.locals import (
@@ -26,6 +28,15 @@ if __name__ == '__main__':
 
     player = Player()
 
+    enemies = pygame.sprite.Group()
+    all_sprites = pygame.sprite.Group()
+    all_sprites.add(player)
+
+    ADDENEMY = pygame.USEREVENT + 1
+    pygame.time.set_timer(ADDENEMY, 250)
+
+    clock = pygame.time.Clock()
+
     running = True
     while running:
         for event in pygame.event.get():
@@ -34,15 +45,31 @@ if __name__ == '__main__':
                     running = False
             if event.type == pygame.QUIT:
                 running = False
+            elif event.type == ADDENEMY:
+                new_enemy = Enemy()
+                enemies.add(new_enemy)
+                all_sprites.add(new_enemy)
 
         screen.fill((0, 0, 0))
 
         screen.blit(player.surf, player.rect)
 
+        for entity in all_sprites:
+            screen.blit(entity.surf, entity.rect)
+
+        if pygame.sprite.spritecollideany(player, enemies):
+            player.kill()
+            running = False
+
+
         pressed_keys = pygame.key.get_pressed()
         player.update(pressed_keys)
 
+        enemies.update()
+
         pygame.display.flip()
+
+        clock.tick(60)
 
     # Done! Time to quit.
     pygame.quit()
