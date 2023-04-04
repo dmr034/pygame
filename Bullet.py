@@ -1,4 +1,5 @@
 import pygame
+
 import random
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -14,6 +15,3 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.move_ip(0, -self.speed)
         if self.rect.top <= 0:
             self.kill()
-
-    def shoot(self, enemies):
-        enemies.sprites().remove
