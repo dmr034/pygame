@@ -5,6 +5,7 @@
 
 import pygame
 
+from Bullet import Bullet
 from Enemy import Enemy
 from Player import Player
 
@@ -16,6 +17,7 @@ from pygame.locals import (
     K_ESCAPE,
     KEYDOWN,
     QUIT,
+    K_SPACE,
 )
 
 SCREEN_WIDTH = 800
@@ -29,6 +31,7 @@ if __name__ == '__main__':
     player = Player()
 
     enemies = pygame.sprite.Group()
+    bullets = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
 
@@ -43,6 +46,12 @@ if __name__ == '__main__':
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE: # If escape key is pressed, exit the program
                     running = False
+                if event.key == K_SPACE:
+                    new_bullet = Bullet(player.rect.center)
+                    bullets.add(new_bullet)
+                    all_sprites.add(new_bullet)
+                    new_bullet.shoot(enemies)
+
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == ADDENEMY:
@@ -66,10 +75,11 @@ if __name__ == '__main__':
         player.update(pressed_keys)
 
         enemies.update()
+        bullets.update()
 
         pygame.display.flip()
 
-        clock.tick(60)
+        clock.tick(30)
 
     # Done! Time to quit.
     pygame.quit()
