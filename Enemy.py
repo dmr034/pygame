@@ -6,8 +6,8 @@ SCREEN_HEIGHT = 600
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
-        self.surf = pygame.Surface((20, 10))
-        self.surf.fill((255, 255, 255))
+        enemy_image = pygame.image.load('enemy.png')
+        self.surf = pygame.transform.scale(enemy_image, (40, 40))
         self.rect = self.surf.get_rect(
             center=(
                 random.randint(0, SCREEN_WIDTH),

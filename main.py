@@ -21,9 +21,11 @@ from pygame.locals import (
 )
 
 from Score import Score
+from Star import Star
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
+STAR_COUNT = 50
 
 def main(score_limit, level):
     pygame.init()
@@ -37,6 +39,7 @@ def main(score_limit, level):
 
     enemies = pygame.sprite.Group()
     bullets = pygame.sprite.Group()
+    stars = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
 
@@ -44,6 +47,10 @@ def main(score_limit, level):
     pygame.time.set_timer(ADDENEMY, 250)
 
     clock = pygame.time.Clock()
+    for i in range(STAR_COUNT):
+        new_star = Star(SCREEN_WIDTH, SCREEN_HEIGHT)
+        stars.add(new_star)
+        all_sprites.add(new_star)
 
     running = True
     while running:
@@ -62,7 +69,7 @@ def main(score_limit, level):
                 enemies.add(new_enemy)
                 all_sprites.add(new_enemy)
 
-        screen.fill((0, 0, 0))
+        screen.fill((30, 0, 100))
 
         screen.blit(player.surf, player.rect)
         score.show_score(screen)
