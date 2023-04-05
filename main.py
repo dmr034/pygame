@@ -1,12 +1,15 @@
 # This is a sample Python script.
+import random
 
 # Press Shift+F10 to execute it or replace it with your code.
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 import pygame
+import time
 
 from Bullet import Bullet
 from Enemy import Enemy
+from EnemyBullet import EnemyBullet
 from Player import Player
 
 from pygame.locals import (
@@ -22,6 +25,7 @@ from pygame.locals import (
 
 from Score import Score
 from Star import Star
+from StrongEnemy import StrongEnemy
 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
@@ -39,12 +43,14 @@ def main(score_limit, level):
 
     enemies = pygame.sprite.Group()
     bullets = pygame.sprite.Group()
+    enemy_bullets = pygame.sprite.Group()
     stars = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
 
     ADDENEMY = pygame.USEREVENT + 1
-    pygame.time.set_timer(ADDENEMY, 250)
+    pygame.time.set_timer(ADDENEMY, 300)
+    ADDSTRONGENEMY = pygame.USEREVENT + 1
 
     clock = pygame.time.Clock()
     for i in range(STAR_COUNT):
@@ -68,6 +74,19 @@ def main(score_limit, level):
                 new_enemy = Enemy()
                 enemies.add(new_enemy)
                 all_sprites.add(new_enemy)
+                rand_num = random.randint(1, 100)
+                if event.type == ADDSTRONGENEMY and rand_num > 90:
+
+                    if level > 5:
+                        new_s_enemy = StrongEnemy()
+                        enemies.add(new_s_enemy)
+                        shoot = random.randint(1, 30)
+                        all_sprites.add(new_s_enemy)
+                        while(shoot <= 30): # TODO make the new enemies shoot at the player every couple of seconds
+                            shoot += 1
+                            enemy_bullet = EnemyBullet(new_s_enemy.rect.center)
+                            enemy_bullets.add(enemy_bullet)
+                            all_sprites.add(enemy_bullet)
 
         screen.fill((30, 0, 100))
 
@@ -79,6 +98,11 @@ def main(score_limit, level):
                     enemy.kill()
                     bullet.kill()
                     score.score_up()
+
+        for enemy_bullet in enemy_bullets:
+            if enemy_bullet.rect.colliderect(player):
+                player.kill()
+                running = False
 
         for entity in all_sprites:
             screen.blit(entity.surf, entity.rect)
