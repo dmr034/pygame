@@ -43,6 +43,7 @@ def main(score_limit, level):
 
     enemies = pygame.sprite.Group()
     bullets = pygame.sprite.Group()
+    s_enemies = pygame.sprite.Group()
     enemy_bullets = pygame.sprite.Group()
     stars = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
@@ -76,17 +77,13 @@ def main(score_limit, level):
                 all_sprites.add(new_enemy)
                 rand_num = random.randint(1, 100)
                 if event.type == ADDSTRONGENEMY and rand_num > 90:
-
-                    if level > 5:
+                    if level >= 3:
                         new_s_enemy = StrongEnemy()
-                        enemies.add(new_s_enemy)
-                        shoot = random.randint(1, 30)
+                        s_enemies.add(new_s_enemy)
                         all_sprites.add(new_s_enemy)
-                        while(shoot <= 30): # TODO make the new enemies shoot at the player every couple of seconds
-                            shoot += 1
-                            enemy_bullet = EnemyBullet(new_s_enemy.rect.center)
-                            enemy_bullets.add(enemy_bullet)
-                            all_sprites.add(enemy_bullet)
+                        enemy_bullet = EnemyBullet(new_s_enemy.rect.center)
+                        enemy_bullets.add(enemy_bullet)
+                        all_sprites.add(enemy_bullet)
 
         screen.fill((30, 0, 100))
 
@@ -98,6 +95,14 @@ def main(score_limit, level):
                     enemy.kill()
                     bullet.kill()
                     score.score_up()
+
+        for s_enemy in s_enemies:
+            for bullet in bullets:
+                if bullet.rect.colliderect(s_enemy):
+                    s_enemy.kill()
+                    bullet.kill()
+                    score.strong_score_up()
+
 
         for enemy_bullet in enemy_bullets:
             if enemy_bullet.rect.colliderect(player):
@@ -112,10 +117,12 @@ def main(score_limit, level):
             running = False
 
         pressed_keys = pygame.key.get_pressed()
-        player.update(pressed_keys)
+        player.update(pressed_keys )
 
         enemies.update()
         bullets.update()
+        enemy_bullets.update()
+        s_enemies.update()
 
         pygame.display.flip()
 

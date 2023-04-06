@@ -14,5 +14,9 @@ class Score(object):
         self.count += 10
         self.text = self.font.render("Score : "+str(self.count),1,self.white)
 
+    def strong_score_up(self):
+        self.count += 20
+        self.text = self.font.render("Score : "+str(self.count),1,self.white)
+
     def get_score(self):
         return self.count

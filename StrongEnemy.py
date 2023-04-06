@@ -8,7 +8,7 @@ class StrongEnemy(Enemy):
         self.surf = pygame.transform.scale(s_enemy_image, (40, 40))
         self.rect = self.surf.get_rect(
             center=(
-                random.randint(SCREEN_WIDTH + 20, SCREEN_WIDTH + 100),
+                random.randint(400, SCREEN_WIDTH-50),
                 random.randint(10, SCREEN_HEIGHT-100),
             )
         )
