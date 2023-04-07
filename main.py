@@ -5,7 +5,7 @@ import random
 # Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
 
 import pygame
-import time
+import button
 
 from Bullet import Bullet
 from Enemy import Enemy
@@ -21,25 +21,29 @@ from pygame.locals import (
     KEYDOWN,
     QUIT,
     K_SPACE,
+    K_p,
+
 )
 
 from Score import Score
 from Star import Star
 from StrongEnemy import StrongEnemy
 
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_WIDTH = 1080
+SCREEN_HEIGHT = 720
 STAR_COUNT = 50
 
 def main(score_limit, level):
     pygame.init()
-    pygame.display.set_caption('Level ' + str(level))
+    pygame.display.set_caption('Main Menu')
     pygame.font.init()
     score = Score()
 
     screen = pygame.display.set_mode([SCREEN_WIDTH, SCREEN_HEIGHT])
 
-    player = Player()
+    game_paused = False
+
+    player = Player(SCREEN_HEIGHT, SCREEN_WIDTH)
 
     enemies = pygame.sprite.Group()
     bullets = pygame.sprite.Group()
@@ -53,6 +57,9 @@ def main(score_limit, level):
     pygame.time.set_timer(ADDENEMY, 300)
     ADDSTRONGENEMY = pygame.USEREVENT + 1
 
+    font = pygame.font.SysFont("courier new", 20)
+    TEXT_COL = (255, 255, 255)
+
     clock = pygame.time.Clock()
     for i in range(STAR_COUNT):
         new_star = Star(SCREEN_WIDTH, SCREEN_HEIGHT)
@@ -61,31 +68,41 @@ def main(score_limit, level):
 
     running = True
     while running:
+
+        pygame.display.set_caption("Level " + str(level))
+        screen.fill((30, 0, 100))
+
+        # Check if game is paused
+        if game_paused == True:
+           pass
+        else:
+            draw_text("Press \'p\' to pause", font, TEXT_COL, SCREEN_WIDTH / 1.5, 0, screen)
+
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:  # If escape key is pressed, exit the program
                     running = False
                 if event.key == K_SPACE:
-                    new_bullet = Bullet(player.rect.center)
+                    new_bullet = Bullet(player.rect.center, SCREEN_HEIGHT, SCREEN_WIDTH)
                     bullets.add(new_bullet)
                     all_sprites.add(new_bullet)
+                if event.key == K_p:
+                    game_paused = True
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == ADDENEMY:
-                new_enemy = Enemy()
+                new_enemy = Enemy(SCREEN_HEIGHT, SCREEN_WIDTH)
                 enemies.add(new_enemy)
                 all_sprites.add(new_enemy)
                 rand_num = random.randint(1, 100)
                 if event.type == ADDSTRONGENEMY and rand_num > 90:
                     if level >= 3:
-                        new_s_enemy = StrongEnemy()
+                        new_s_enemy = StrongEnemy(SCREEN_HEIGHT, SCREEN_WIDTH)
                         s_enemies.add(new_s_enemy)
                         all_sprites.add(new_s_enemy)
-                        enemy_bullet = EnemyBullet(new_s_enemy.rect.center)
+                        enemy_bullet = EnemyBullet(new_s_enemy.rect.center, SCREEN_HEIGHT, SCREEN_WIDTH)
                         enemy_bullets.add(enemy_bullet)
                         all_sprites.add(enemy_bullet)
-
-        screen.fill((30, 0, 100))
 
         screen.blit(player.surf, player.rect)
         score.show_score(screen)
@@ -134,6 +151,10 @@ def main(score_limit, level):
 
     # Done! Time to quit.
     pygame.quit()
+
+def draw_text(text, font, text_col, x, y, screen):
+    img = font.render(text, True, text_col)
+    screen.blit(img, (x, y))
 
 if __name__ == '__main__':
     main(50, 1)

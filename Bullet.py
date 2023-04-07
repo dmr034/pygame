@@ -1,12 +1,12 @@
 import pygame
 
 import random
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, pos):
+    def __init__(self, pos, screen_height, screen_width):
         super(Bullet, self).__init__()
         self.speed = 10
+        self.screen_height = screen_height
+        self.screen_width = screen_width
         self.surf = pygame.Surface((10, 20))
         self.surf.fill((0, 255, 0))
         self.rect = self.surf.get_rect(center=pos)
