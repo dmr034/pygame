@@ -33,7 +33,7 @@ SCREEN_WIDTH = 1080
 SCREEN_HEIGHT = 720
 STAR_COUNT = 50
 
-def main(score_limit, level):
+def main(score_limit, level, spawn_time):
     pygame.init()
     pygame.display.set_caption('Main Menu')
     pygame.font.init()
@@ -53,8 +53,10 @@ def main(score_limit, level):
     all_sprites = pygame.sprite.Group()
     all_sprites.add(player)
 
+
+
     ADDENEMY = pygame.USEREVENT + 1
-    pygame.time.set_timer(ADDENEMY, 300)
+    pygame.time.set_timer(ADDENEMY, spawn_time)
     ADDSTRONGENEMY = pygame.USEREVENT + 1
 
     font = pygame.font.SysFont("courier new", 20)
@@ -147,7 +149,11 @@ def main(score_limit, level):
 
         if score.get_score() >= score_limit:
             score.count = 0
-            main(score_limit + 50, level+1)
+            if level % 3 == 0:
+                main(score_limit + 50, level+1, spawn_time-100)
+            else:
+                main(score_limit + 50, level+1, spawn_time)
+
 
     # Done! Time to quit.
     pygame.quit()
@@ -157,4 +163,4 @@ def draw_text(text, font, text_col, x, y, screen):
     screen.blit(img, (x, y))
 
 if __name__ == '__main__':
-    main(50, 1)
+    main(50, 1, 700)
