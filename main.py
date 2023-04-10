@@ -25,6 +25,7 @@ from pygame.locals import (
 
 )
 
+from Powerup import Powerup
 from Score import Score
 from Star import Star
 from StrongEnemy import StrongEnemy
@@ -51,6 +52,7 @@ def main(score_limit, level, spawn_time):
     enemy_bullets = pygame.sprite.Group()
     stars = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
+    powerups = pygame.sprite.Group()
     all_sprites.add(player)
 
 
@@ -58,6 +60,7 @@ def main(score_limit, level, spawn_time):
     ADDENEMY = pygame.USEREVENT + 1
     pygame.time.set_timer(ADDENEMY, spawn_time)
     ADDSTRONGENEMY = pygame.USEREVENT + 1
+    ADDPOWERUP = pygame.USEREVENT + 1
 
     font = pygame.font.SysFont("courier new", 20)
     TEXT_COL = (255, 255, 255)
@@ -67,10 +70,10 @@ def main(score_limit, level, spawn_time):
         new_star = Star(SCREEN_WIDTH, SCREEN_HEIGHT)
         stars.add(new_star)
         all_sprites.add(new_star)
-
+    count = 0
     running = True
     while running:
-
+        count += 1
         pygame.display.set_caption("Level " + str(level))
         screen.fill((30, 0, 100))
 
@@ -79,6 +82,8 @@ def main(score_limit, level, spawn_time):
            pass
         else:
             draw_text("Press \'p\' to pause", font, TEXT_COL, SCREEN_WIDTH / 1.5, 0, screen)
+            draw_text("Health: " + str(player.health), font, TEXT_COL, SCREEN_WIDTH / 1.15, SCREEN_HEIGHT / 1.05, screen)
+            #draw_text(str(count), font, TEXT_COL, SCREEN_WIDTH/1.05, SCREEN_HEIGHT/1.05, screen)
 
         for event in pygame.event.get():
             if event.type == KEYDOWN:
@@ -90,6 +95,16 @@ def main(score_limit, level, spawn_time):
                     all_sprites.add(new_bullet)
                 if event.key == K_p:
                     game_paused = True
+            if event.type == ADDPOWERUP:
+                cur_time = count
+                rand_num = random.randint(1, 100)
+                if rand_num >= 95 and len(powerups) == 0:
+                    powerup = Powerup(random.randint(30, SCREEN_WIDTH-30),
+                                       random.randint(30, SCREEN_HEIGHT/2),
+                                       SCREEN_HEIGHT,
+                                       SCREEN_WIDTH)
+                    powerups.add
+                    all_sprites.add(powerup)
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == ADDENEMY:
@@ -122,18 +137,28 @@ def main(score_limit, level, spawn_time):
                     bullet.kill()
                     score.strong_score_up()
 
+        for powerup in powerups:
+            for bullet in bullets:
+                if bullet.rect.colliderect(powerup):
+                    powerup.kill()
+                    powerups.remove(powerup)
+
 
         for enemy_bullet in enemy_bullets:
             if enemy_bullet.rect.colliderect(player):
-                player.kill()
-                running = False
+                player.hit(5)
+                if player.health <= 0:
+                    player.kill()
+                    running = False
 
         for entity in all_sprites:
             screen.blit(entity.surf, entity.rect)
 
         if pygame.sprite.spritecollideany(player, enemies):
-            player.kill()
-            running = False
+            player.hit(2)
+            if player.health <= 0:
+                player.kill()
+                running = False
 
         pressed_keys = pygame.key.get_pressed()
         player.update(pressed_keys )

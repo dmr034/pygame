@@ -22,6 +22,7 @@ class Player(pygame.sprite.Sprite):
         player_image = pygame.image.load('images/starship.png')
         self.surf = pygame.transform.scale(player_image, (75, 75))
         self.rect = self.surf.get_rect()
+        self.health = 100
         self.rect.center = (self.screen_width/2, self.screen_height)
 
     def update(self, pressed_keys):
@@ -38,3 +39,6 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
         if self.rect.bottom >= self.screen_height:
             self.rect.bottom = self.screen_height
+
+    def hit(self, damage):
+        self.health -= damage

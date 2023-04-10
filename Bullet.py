@@ -4,7 +4,7 @@ import random
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, pos, screen_height, screen_width):
         super(Bullet, self).__init__()
-        self.speed = 10
+        self.speed = 40
         self.screen_height = screen_height
         self.screen_width = screen_width
         self.surf = pygame.Surface((10, 20))
