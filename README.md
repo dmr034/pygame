@@ -11,6 +11,15 @@ Download all necessary files, and run the program. Make sure to have the followi
 1. Python 3.9
 2. pygame 
 3. random
-4. button
 
-Once you begin the program, you will be presented with a screen that asks the user what they would like to do.
+Once you begin the program, you will be presented with a screen that asks the user what they would like to do. The user
+can start the game by pressing play, and the game will begin. The user can also press quit to exit the game.
+
+### How To Play
+
+Start the game by hitting "Play", you will then be taken to a screen where enemies approach you. Shoot the enemies, try
+not to die, and get the highest score you can! 
+
+##### To Control the Player:
+- Left and Right arrow keys to move
+- Space to shoot
