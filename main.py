@@ -20,7 +20,6 @@ from pygame.locals import (
 
 )
 
-from Powerup import Powerup
 from Score import Score
 from Star import Star
 from StrongEnemy import StrongEnemy
@@ -51,12 +50,10 @@ def play_game(level, score_limit, screen, spawn_time):
     enemy_bullets = pygame.sprite.Group()
     stars = pygame.sprite.Group()
     all_sprites = pygame.sprite.Group()
-    powerups = pygame.sprite.Group()
     all_sprites.add(player)
     ADDENEMY = pygame.USEREVENT + 1
     pygame.time.set_timer(ADDENEMY, spawn_time)
     ADDSTRONGENEMY = pygame.USEREVENT + 1
-    ADDPOWERUP = pygame.USEREVENT + 1
     font = pygame.font.SysFont("courier new", 20)
     TEXT_COL = (255, 255, 255)
     clock = pygame.time.Clock()
@@ -80,17 +77,6 @@ def play_game(level, score_limit, screen, spawn_time):
                 if event.key == K_SPACE:
                     new_bullet = Bullet(player.rect.center, SCREEN_HEIGHT, SCREEN_WIDTH)
                     bullets.add(new_bullet)
-                    all_sprites.add(new_bullet)
-            if event.type == ADDPOWERUP:
-                cur_time = count
-                rand_num = random.randint(1, 100)
-                if rand_num >= 95 and len(powerups) == 0:
-                    powerup = Powerup(random.randint(30, SCREEN_WIDTH - 30),
-                                      random.randint(30, SCREEN_HEIGHT / 2),
-                                      SCREEN_HEIGHT,
-                                      SCREEN_WIDTH)
-                    powerups.add
-                    all_sprites.add(powerup)
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == ADDENEMY:
@@ -122,12 +108,6 @@ def play_game(level, score_limit, screen, spawn_time):
                     s_enemy.kill()
                     bullet.kill()
                     score.strong_score_up()
-
-        for powerup in powerups:
-            for bullet in bullets:
-                if bullet.rect.colliderect(powerup):
-                    powerup.kill()
-                    powerups.remove(powerup)
 
         for enemy_bullet in enemy_bullets:
             if enemy_bullet.rect.colliderect(player):
@@ -173,20 +153,18 @@ def main_menu(screen, score_limit, spawn_time):
 
         menu_mouse_pos = pygame.mouse.get_pos()
 
-        menu_font = pygame.font.SysFont("courier new",20)
+        menu_font = pygame.font.SysFont("courier new",50)
         menu_text = menu_font.render("Main Menu", True, WHITE)
-        menu_rect = menu_text.get_rect(center=(SCREEN_WIDTH/2, 10))
+        menu_rect = menu_text.get_rect(center=(SCREEN_WIDTH/2, 50))
 
-        play_button = Button(image=pygame.image.load("images/play_text.png"), xpos=640, ypos=250,
-                             text_input="PLAY", font=menu_font, base_color=WHITE, hovering_color=(155, 155, 155))
-        how_to_play_button = Button(image=pygame.image.load("images/how_to_text.png"), xpos=640, ypos=400,
-                             text_input="HOW TO PLAY", font=menu_font, base_color=WHITE, hovering_color=(155, 155, 155))
-        quit_button = Button(image=pygame.image.load("images/quit_text.png"), xpos=640, ypos=550,
-                             text_input="QUIT", font=menu_font, base_color=WHITE, hovering_color=(155, 155, 155))
+        play_button = Button(image=pygame.image.load("images/button.png"), xpos=640, ypos=250,
+                             text_input="PLAY", font=menu_font, base_color=BLACK, hovering_color=(155, 155, 155))
+        quit_button = Button(image=pygame.image.load("images/button.png"), xpos=640, ypos=550,
+                             text_input="QUIT", font=menu_font, base_color=BLACK, hovering_color=(155, 155, 155))
 
         screen.blit(menu_text, menu_rect)
 
-        for button in [play_button, how_to_play_button, quit_button]:
+        for button in [play_button, quit_button]:
             button.changeColor(menu_mouse_pos)
             button.update(screen)
 
@@ -196,8 +174,6 @@ def main_menu(screen, score_limit, spawn_time):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_button.check_for_input(menu_mouse_pos):
                     play_game(1, score_limit, screen, spawn_time)
-                if how_to_play_button.check_for_input(menu_mouse_pos):
-                    pass
                 if quit_button.check_for_input(menu_mouse_pos):
                     pygame.quit()
 
