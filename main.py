@@ -77,6 +77,7 @@ def play_game(level, score_limit, screen, spawn_time):
                 if event.key == K_SPACE:
                     new_bullet = Bullet(player.rect.center, SCREEN_HEIGHT, SCREEN_WIDTH)
                     bullets.add(new_bullet)
+                    all_sprites.add(new_bullet)
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == ADDENEMY:
@@ -140,9 +141,9 @@ def play_game(level, score_limit, screen, spawn_time):
         if score.get_score() >= score_limit:
             score.count = 0
             if level % 3 == 0:
-                main(score_limit + 50, level + 1, spawn_time - 100)
+                play_game(level + 1, score_limit + 50, screen, spawn_time - 100)
             else:
-                main(score_limit + 50, level + 1, spawn_time)
+                play_game(level + 1, score_limit + 50, screen, spawn_time)
     # Done! Time to quit.
     pygame.quit()
 
